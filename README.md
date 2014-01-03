@@ -36,8 +36,14 @@ lx - lixnet@ocovi.com - btc - 1PuR77TP5KNupjVY9ZAbo6RRUdGaxXbD3q
 
 itod - 1itod1vPdh4rCtaJiewNQjd4JnfZw7ZTN				
 
--wild
+
+
+
+-wild0wnes
+
 I <3 crypto tips
+
 Bitcoin: 1FCmfke28oSjJA7VCMLFnoCxqSQaGRaW7b
+
 Litecoin: LVABNAWia83o6EcM8L17kf7s3X7uqTyUuf
 
