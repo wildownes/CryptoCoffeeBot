@@ -12,6 +12,7 @@ TIPPING ADDRESSES/CONTACT INFO:
 
 Algorithm Developers:
 Thanasis - BTC - 1CRSH4LGGRWVWqgwfquky2Rk5eJK6gsyus
+
 Btcorbust - BTC - 1KvPi4XybwC6bmErQ53GDKLvrJrobK1PER
 
 Module Developers:
