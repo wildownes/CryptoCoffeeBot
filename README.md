@@ -21,7 +21,7 @@ Community Support:
 maksm - cryptotraderlab.org - BCT - Unknown
 Kugutsumen - Kugutsumen Chat - BTC - Unknown
 lx - BotMatrix_LX - lixnet@ocovi.com - btc - 1PuR77TP5KNupjVY9ZAbo6RRUdGaxXbD3q
-Wild0wnes - CryptoCoffeeBot GitHubRepo - BTC 1FCmfke28oSjJA7VCMLFnoCxqSQaGRaW7b LTC LVABNAWia83o6EcM8L17kf7s3X7uqTyUuf
+Wild0wnes - wildownes@inbox.com - CryptoCoffeeBot GitHubRepo - BTC 1FCmfke28oSjJA7VCMLFnoCxqSQaGRaW7b LTC LVABNAWia83o6EcM8L17kf7s3X7uqTyUuf
 
 
 Additional Contributors 
