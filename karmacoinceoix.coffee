@@ -1,7 +1,8 @@
 ###
 CEX.IO v0.1 - karma.coin / email
     btc xxxxxxxxxxxxxxxxxxx
-https://cryptotrader.org/topics/459298/1m-trade-period-for-cex-io 
+https://cryptotrader.org/topics/459298/1m-trade-period-for-cex-io
+https://cryptotrader.org/backtests/tWG37iu4Jiwrpg9Ek 
 
 ****Module Credits**** (PLEASE KEEP UPDATED)
 OpenSettings module v0.1 by wild0wnes
