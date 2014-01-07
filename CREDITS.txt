@@ -7,7 +7,6 @@ TIPPING ADDRESSES/CONTACT INFO:
 Algorithm Developers:
 Thanasis - BTC - 1CRSH4LGGRWVWqgwfquky2Rk5eJK6gsyus
 Btcorbust - BTC - 1KvPi4XybwC6bmErQ53GDKLvrJrobK1PER
-Liteguy - Unknown
 
 Module Developers:
 sportpilot - BTC - 1561k5XqWFJSHP8apmvGt15ecWjw9ZLKGi
@@ -20,6 +19,7 @@ Wild0wnes - wildownes@inbox.com - CryptoCoffeeBot GitHubRepo - BTC 1FCmfke28oSjJ
 
 
 Additional Contributors 
+Liteguy - Unknown
 rader59 - 1PSeukGB7j8ENuHsyHwtj17kVYXxsD4qbN
 Frogdog - Unknown	
 elsimo - BTC- 14Ea3BwxnngAhBwuNoTo87v9gxZbD5iASm  LTC: LfeQdoVS2FWbW8VGWfcwoy4iqw724KVsFd
