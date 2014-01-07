@@ -18,7 +18,7 @@ Stats & Orders module v0.4.6 by sportpilot
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # OpenSettings - v0.1 by wild0wnes
-# nmc - 1FCmfke28oSjJA7VCMLFnoCxqSQaGRaW7b
+# btc - 1FCmfke28oSjJA7VCMLFnoCxqSQaGRaW7b
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class OpenSettings
   @module_disabler: (context, data)->
@@ -28,7 +28,7 @@ class OpenSettings
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # SimplePlot module v1 by wild0wnes
-# nmc - 1FCmfke28oSjJA7VCMLFnoCxqSQaGRaW7b
+# btc - 1FCmfke28oSjJA7VCMLFnoCxqSQaGRaW7b
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class SimplePlot
   @handle: (context, data)->
@@ -44,12 +44,12 @@ class SimplePlot
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Stats & Orders module v0.4.6 by sportpilot
-# nmc - 1561k5XqWFJSHP8apmvGt15ecWjw9ZLKGi
+# btc - 1561k5XqWFJSHP8apmvGt15ecWjw9ZLKGi
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   Description: This module provides Statistics reporting
 #     and the ability to use Limit Orders, change the
 #     Trade Timeout, set btc limit or to set Reserves  
-#     for btc &/or nmc.
+#     for btc &/or ghs.
 #
 class Stats
   @handle: (context, data)->
@@ -150,10 +150,10 @@ class Stats
         context.Strat2_loss_value += trade_net
 
   @can_buy: (context) ->
-    context.trader_curr2 >= ((context.cur_ins.price * context.min_nmc) * (1 + context.fee_percent / 100))
+    context.trader_curr2 >= ((context.cur_ins.price * context.min_ghs) * (1 + context.fee_percent / 100))
 
   @can_sell: (context) ->
-    context.trader_curr1 >= context.min_nmc
+    context.trader_curr1 >= context.min_ghs
 
   @sell: (context, amt = null) ->
     if Stats.can_sell(context)
@@ -211,8 +211,8 @@ class Stats
   # Required variables
   #   Comment any defined in the Host strategy code
   #
-    context.pair = 'nmc_btc'
-    context.min_nmc = 0.01
+    context.pair = 'ghs_btc'
+    context.min_ghs = 0.01
     context.fee_percent = 0.6
     context.buy_limit_percent = 0
     context.sell_limit_percent = 0
