@@ -1,5 +1,5 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Stats & Orders module v0.4.6 by sportpilot
+# Stats & Orders module v0.4.8 by sportpilot
 #
 #   Donations: 1561k5XqWFJSHP8apmvGt15ecWjw9ZLKGi
 #
@@ -129,13 +129,17 @@ class Stats
           trade_amount = _.min([amt, context.trader_curr1 - context.curr1_reserve])
         else
           trade_amount = context.trader_curr1 - context.curr1_reserve
+        if context.trade_emails then sendEmail("Attempting a SELL of #{trade_amount} #{context.currs[0]} at #{trade_price} #{context.currs[1]} with a timeout of #{context.sell_timeout}")
         if trade_result = sell context.cur_ins, trade_amount, trade_price, context.sell_timeout
+          if context.trade_emails then sendEmail("SELL completed - #{trade_result.amount} #{context.currs[0]} at #{trade_result.price}")
           context.trade_value = trade_result.amount * trade_result.price
           context.trader_curr2 += context.trade_value
           context.trader_curr1 -= trade_result.amount
           Stats.win_loss(context, trade_result)
           context.traded = true
           if amt? then context.trade_type = 'sell_amt' else context.trade_type = 'sell'
+        else
+          sendEmail("SELL Failed")
 
   @buy: (context, amt = null) ->
     if Stats.can_buy(context)
@@ -148,23 +152,28 @@ class Stats
           trade_amount = _.min([amt * trade_price, context.trader_curr2 - context.curr2_reserve]) / trade_price
         else
           trade_amount = (context.trader_curr2 - context.curr2_reserve) / trade_price
+        if context.trade_emails then sendEmail("Attempting a BUY of #{trade_amount} #{context.currs[0]} at #{trade_price} #{context.currs[1]} with a timeout of #{context.buy_timeout}")
         if trade_result = buy context.cur_ins, trade_amount, trade_price, context.buy_timeout
+          if context.trade_emails then sendEmail("BUY completed - #{trade_result.amount} #{context.currs[0]} at #{trade_result.price}")
           context.trade_value = trade_result.amount * trade_result.price
           context.trader_curr2 -= context.trade_value
           context.trader_curr1 += trade_result.amount
           context.traded = true
           if amt? then context.trade_type = 'buy_amt' else context.trade_type = 'buy'
+        else
+          sendEmail("BUY Failed")
 #
 # Context for Stats
 #
   @context: (context) ->
-    context.stats = 'all'       # Display Stats? all = every stats period , sell = only on sells, both = only on buy or sell, off = no Stats
-    context.stats_period = 120  # Display Stats only every n minutes when .stats = 'all'
-    context.balances = true     # Display Balances?
-    context.gain_loss = true    # Display Gain / Loss?
-    context.win_loss = true     # Display Win / Loss?
-    context.prices = true       # Display Prices?
-  #  context.triggers = false    # Display Trade triggers? *** Temporarily disabled
+    context.stats = 'all'         # Display Stats? all = every stats period , sell = only on sells, both = only on buy or sell, off = no Stats
+    context.stats_period = 120    # Display Stats only every n minutes when .stats = 'all'
+    context.trade_emails = true   # Send an Email when a trade is attempted and another when it completes or fails (Live only)
+    context.balances = true       # Display Balances?
+    context.gain_loss = true      # Display Gain / Loss?
+    context.win_loss = true       # Display Win / Loss?
+    context.prices = true         # Display Prices?
+  #  context.triggers = false     # Display Trade triggers? *** Temporarily disabled
   #
   # Context for Orders
   #
@@ -173,15 +182,16 @@ class Stats
   #  context.curr2_limit = null        # curr2 Trading Limit (null = no limit) *** Temporarily disabled
   #
   # Required variables
-  #   Comment any defined in the Host strategy code
+  #   Comment any defined in the Host strategy code. The values listed here will
+  #     overwritten if they are later redefined by other code.
   #
     context.pair = 'btc_usd'
     context.min_btc = 0.01
     context.fee_percent = 0.6
     context.buy_limit_percent = 0
     context.sell_limit_percent = 0
-    context.buy_timeout = 10
-    context.sell_timeout = 10
+    context.buy_timeout = null
+    context.sell_timeout = null
   #
   # DO NOT change anything below
   #
@@ -250,7 +260,7 @@ class Stats
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Stats & Orders module v0.4.6 by sportpilot
+# Stats & Orders module v0.4.8 by sportpilot
 #
 # context: method
 #
@@ -262,7 +272,7 @@ init: (context)->
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Stats & Orders module v0.4.6 by sportpilot
+# Stats & Orders module v0.4.8 by sportpilot
 #
 # serialize: method
 #
@@ -274,7 +284,7 @@ serialize: (context)->
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Stats & Orders module v0.4.6 by sportpilot
+# Stats & Orders module v0.4.8 by sportpilot
 #
 # handle: method
 #
@@ -286,7 +296,7 @@ handle: (context, data)->
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Stats & Orders module v0.4.6 by sportpilot
+# Stats & Orders module v0.4.8 by sportpilot
 #
 # sell() method - with optional (, amount) parameter
 #
@@ -303,7 +313,7 @@ handle: (context, data)->
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Stats & Orders module v0.4.6 by sportpilot
+# Stats & Orders module v0.4.8 by sportpilot
 #
 # buy() method - with optional (, amount) parameter
 #
@@ -320,7 +330,7 @@ handle: (context, data)->
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Stats & Orders module v0.4.6 by sportpilot
+# Stats & Orders module v0.4.8 by sportpilot
 #
 # Process Stats
 #
@@ -335,7 +345,7 @@ handle: (context, data)->
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Stats & Orders module v0.4.6 by sportpilot
+# Stats & Orders module v0.4.8 by sportpilot
 #
 # finalize: method
 #
