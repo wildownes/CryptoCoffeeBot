@@ -7,7 +7,7 @@
 ## LTC: LW8v6hocT7jGaXfWxwJrU4taeYBRH4V5Kr
 ##
 ##        btcorbust@gmail.com
-##
+## Backtest: https://cryptotrader.org/backtests/ZKfap7PuxMaFy5pNw
 ###########################################################
 ##
 ## Mix and match your favourite indicators
