@@ -1,3 +1,77 @@
+#Needs proper credits/tipping addresses
+#Backtest: https://cryptotrader.org/backtests/NQypcohNNpxmoAR23
+#code from @sportpilot & @ccrypto
+#btce 1m EMA 7/14 v0.2
+#20140108
+#4ng3l
+#name:btce 1m sportpilot-ccrypto
+class Init
+  @init_context: (context) ->
+    context.pair = 'btc_usd'
+    context.fee_percent = 0.2
+    context.min_btc = 0.00
+    context.buy_treshold = 0.2
+    context.sell_treshold = 0.025
+    context.sell_timeout = null
+    context.buy_timeout = null
+    context.init = true
+
+class btceUSDBTC
+  @handle: (context, data) ->
+    # get instrument
+    instrument = data[context.pair]
+
+    debug "tick"
+    # handle instrument data
+    if context.init
+      instrument = data.instruments[0]
+      short = instrument.ema(7) # calculate EMA value using ta-lib function
+      long = instrument.ema(14)
+      # draw moving averages on chart
+      plot
+          short: short
+          long: long
+      diff = 100 * (short - long) / ((short + long) / 2)
+
+      # buy options
+      if diff > context.buy_treshold
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Stats & Orders module v0.5.1 by sportpilot
+#
+# buy() method - with optional (, amount) parameter
+#
+#   Installation: Replace ALL instances of:
+# -->   Functions.buy(instrument, context.buy_limit_percent, context.buy_timeout)
+# OR
+# -->   buy(instrument)
+#     with a copy of this block
+#
+#   NOTE: Pay attention to the indentation of the code
+#           line. It must be adjusted for your host code.
+#
+        Stats.buy context
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      # sell options
+      else
+        if diff < -context.sell_treshold
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Stats & Orders module v0.5.1 by sportpilot
+#
+# sell() method - with optional (, amount) parameter
+#
+#   Installation: Replace ALL instances (3) of:
+# -->   Functions.sell(instrument, context.sell_limit_percent, context.sell_timeout)
+#     with a copy of this block
+# OR
+# -->   sell(instrument)
+#
+#   NOTE: Pay attention to the indentation of the code
+#           line. It must be adjusted for your host code.
+#
+          Stats.sell context
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Stats & Orders module v0.5.1 by sportpilot
 #
@@ -10,7 +84,6 @@
 #
 #   Ref: https://cryptotrader.org/topics/332486/stats-orders-module-v0-3-1
 #   Usage: for inclusion in latest Ichi-Scalp
-#   Backtest: https://cryptotrader.org/backtests/dH3Beakn9kyGmHCGn
 #
 # Functions code block
 #   Installation: Paste this block just BEFORE the
@@ -199,13 +272,13 @@ class Stats
   #   Comment any defined in the Host strategy code. The values listed here will
   #     overwritten if they are later redefined by other code.
   #
-    context.pair = 'btc_usd'
+#    context.pair = 'btc_usd'
 #    context.min_btc = 0.01
 #    context.fee_percent = 0.6
     context.buy_limit_percent = 0
     context.sell_limit_percent = 0
-    context.buy_timeout = null
-    context.sell_timeout = null
+#    context.buy_timeout = null
+#    context.sell_timeout = null
   #
   # DO NOT change anything below
   #
@@ -286,6 +359,7 @@ class Stats
 init: (context)->
   Stats.context(context)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Init.init_context(context)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Stats & Orders module v0.5.1 by sportpilot
@@ -310,41 +384,7 @@ serialize: (context)->
 handle: (context, data)->
   Stats.handle(context, data)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Stats & Orders module v0.5.1 by sportpilot
-#
-# sell() method - with optional (, amount) parameter
-#
-#   Installation: Replace ALL instances (3) of:
-# -->   Functions.sell(instrument, context.sell_limit_percent, context.sell_timeout)
-#     with a copy of this block
-# OR
-# -->   sell(instrument)
-#
-#   NOTE: Pay attention to the indentation of the code
-#           line. It must be adjusted for your host code.
-#
-  Stats.sell context
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Stats & Orders module v0.5.1 by sportpilot
-#
-# buy() method - with optional (, amount) parameter
-#
-#   Installation: Replace ALL instances of:
-# -->   Functions.buy(instrument, context.buy_limit_percent, context.buy_timeout)
-# OR
-# -->   buy(instrument)
-#     with a copy of this block
-#
-#   NOTE: Pay attention to the indentation of the code
-#           line. It must be adjusted for your host code.
-#
-  Stats.buy context
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+  btceUSDBTC.handle(context, data)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Stats & Orders module v0.5.1 by sportpilot
 #
