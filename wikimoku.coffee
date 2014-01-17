@@ -221,8 +221,8 @@ class Stats
     context.fee_percent = 0.6
     context.buy_limit_percent = 0
     context.sell_limit_percent = 0
-    context.buy_timeout = 10
-    context.sell_timeout = 10
+    context.buy_timeout = 90
+    context.sell_timeout = 90
   #
   # DO NOT change anything below
   #
