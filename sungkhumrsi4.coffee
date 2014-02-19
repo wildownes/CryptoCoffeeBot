@@ -1,6 +1,6 @@
 ###########################################################  
 #                                                         #
-# Sungkhum StochRSI/MACD Bot 4.0                          #
+# Sungkhum StochRSI/MACD Bot 4.0 2h                       #
 # BTC: 1Pu3a4kNEPYiszh8xFv3x7JqWrpbDs28XK                 #
 #                                                         #
 # Using Thanasis full working framework                   #
