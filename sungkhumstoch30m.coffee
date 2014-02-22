@@ -1,9 +1,9 @@
 ###########################################################  
 #                                                         #
-# Sungkhum StochRSI/MACD/MFI 30m Bot 1.0                  #
+# Sungkhum StochRSI/MACD/MFI Bot 1.1                      #
 # BTC: 1Pu3a4kNEPYiszh8xFv3x7JqWrpbDs28XK                 #
 #                                                         #
-# Using Thanasis full working framework                   #
+# Using Thanasis full working framework and Emergency bot #
 # Thanasis BTC: 1CRSH4LGGRWVWqgwfquky2Rk5eJK6gsyus        #
 #                                                         #
 ###########################################################
@@ -37,7 +37,12 @@ class Init
     context.mfi_HIGH = false
     context.mfi_LOW = false
     
- 
+    context.percent_emergency_sell =  30
+    context.percent_recovery_buy   =  15
+    context.percent_emergency_buy  =  30
+    context.percent_recovery_sell  =  15
+
+    context.lagemergency  =  15
 
 ###### Serialized constants - don't touch bellow ###########
 
@@ -175,6 +180,17 @@ handle: (context, data)->
     close_lag  =  instrument.close[instrument.close.length - context.lag]
     volume_lag =  instrument.volumes[instrument.volumes.length - context.lag]
 
+
+
+    emergency_price_lag  =  instrument.close[instrument.close.length - context.lagemergency]
+    emergency_open_lag   =  instrument.open[instrument.open.length - context.lagemergency]
+    emergency_high_lag   =  instrument.high[instrument.high.length - context.lagemergency]
+    emergency_low_lag    =  instrument.low[instrument.low.length - context.lagemergency]
+    emergency_close_lag  =  instrument.close[instrument.close.length - context.lagemergency]
+    emergency_volume_lag =  instrument.volumes[instrument.volumes.length - context.lagemergency]
+
+    #period_in_minutes = (instrument.ticks[2].at - instrument.ticks[1].at) / 60000
+
 ########################################
 ##### calculate capital ################    
 
@@ -207,7 +223,7 @@ handle: (context, data)->
 
     #high_low_percent = functions.percent(high, low)
 
-
+    percent_price_change   = functions.percent(price, emergency_price_lag)
 
 ########################################
 ##### define indicator functions ####### 
@@ -225,7 +241,69 @@ handle: (context, data)->
 
     #warn "#{stochrsi.K}#{stochrsi.D} "
 
+
+##################################################
+###### emergency main calculations ###############
+
+    percent_emergency_sell2 = context.percent_emergency_sell + (context.percent_recovery_buy   -  context.percent_emergency_sell) * (1 / 2)
+    percent_emergency_buy2  = context.percent_emergency_buy  + (context.percent_recovery_sell  -  context.percent_emergency_buy)  * (1 / 2)
   
+   
+    price_emergency_sell    = emergency_price_lag  *  (1 - context.percent_emergency_sell / 100)
+    price_emergency_sell2   = emergency_price_lag  *  (1 - percent_emergency_sell2 / 100)
+    price_recovery_buy      = emergency_price_lag  *  (1 - context.percent_recovery_buy / 100)
+  
+
+    price_emergency_buy     = emergency_price_lag  *  (1 + context.percent_emergency_buy / 100)
+    price_emergency_buy2    = emergency_price_lag  *  (1 + percent_emergency_buy2 / 100)
+    price_recovery_sell     = emergency_price_lag  *  (1 + context.percent_recovery_sell / 100)  
+
+
+  
+    emergency_buy_signal   =  off
+    emergency_sell_signal  =  off
+
+    if (price_emergency_sell2  <  price  <  price_emergency_sell)  or      price  >  price_recovery_sell
+       emergency_buy_signal   =  off
+       emergency_sell_signal  =  on
+
+    if (price_emergency_buy     <  price  <  price_emergency_buy2)  or      price  <  price_recovery_buy
+       emergency_buy_signal   =  on
+       emergency_sell_signal  =  off
+
+
+    
+##################################################
+######    Emergency buy or sell orders  ##########
+
+     if emergency_buy_signal 
+        if context.have_fiat
+           buy instrument
+           context.number_of_orders    =  context.number_of_orders + 1
+           context.price_buy           =  price
+           context.commisions_paid     =  context.commisions_paid + instrument.fee * capital / 100
+           context.price_of_last_order =  context.price_buy
+           context.last_action_was     =  "buy"
+           context.have_coins          =  true
+           context.have_fiat           =  false
+           warn "Emergency Buy"
+ 
+    
+    if emergency_sell_signal    
+       
+       if  context.have_coins 
+           sell instrument
+           context.number_of_orders    =  context.number_of_orders + 1
+           context.price_sell          =  price
+           context.commisions_paid     =  context.commisions_paid + instrument.fee * capital / 100    
+           context.price_of_last_order =  context.price_sell   
+           context.last_action_was     =  "sell"
+           context.have_coins          =  false
+           context.have_fiat           =  true
+           warn "Emergency Sell"
+
+
+
 ########################################
 ######    Get Ready signals ################
 
@@ -352,14 +430,14 @@ handle: (context, data)->
   
     #warn "###########################################################"
     #warn "price now:  #{price}"
-    #debug "last action was '#{context.last_action_was}' at the price of:  #{context.price_of_last_order}"
-    #debug "smartness of the bot from the last trade:  #{efficiency_of_last_trade} %"
-    #debug "total number of buy/sell orders:  #{context.number_of_orders}"
-    #debug "total commisions paid by now:  #{context.commisions_paid}"
+    debug "last action was '#{context.last_action_was}' at the price of:  #{context.price_of_last_order}"
+    debug "smartness of the bot from the last trade:  #{efficiency_of_last_trade} %"
+    debug "total number of buy/sell orders:  #{context.number_of_orders}"
+    debug "total commisions paid by now:  #{context.commisions_paid}"
     #warn "start capital:  #{context.first_capital}"
     #warn "capital now:  #{capital}"
-    #warn "total buy and hold efficiency:  #{percent_buy_and_hold} %"    
-    #warn "total bot efficiency:  #{percent_bot} % "
+    warn "total buy and hold efficiency:  #{percent_buy_and_hold} %"    
+    warn "total bot efficiency:  #{percent_bot} % "
     #warn "MACD Didn't BUY >1: "+(macd.macd - context.prevmacd[2])
     #warn "MACD Didn't SELL >0.5 "+(context.prevmacd[2] - macd.macd)
     #warn "	MACD:	"+macd.macd+"	"
