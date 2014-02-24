@@ -1,5 +1,5 @@
-## A test bot to see if it is possible to fill a variable with past data on bot start ##
-
+#### Sample bot showing how to input previous indicator data into a variable.             ####
+#### Thanks to vkvk on https://kugutsumen.campfirenow.com/room/584930 for helping me out. ####
 class Init
 
 
@@ -35,6 +35,9 @@ class functions
       histogram: _.last(results.outMACDHist)
     result
 
+
+
+
   
 init: (context) ->
 
@@ -58,17 +61,22 @@ handle: (context, data)->
 
 
     macd = functions.macd(instrument.close, context.lag, context.FastPeriod,context.SlowPeriod,context.SignalPeriod)
+    macdprev1 = functions.macd(instrument.close, 2, context.FastPeriod,context.SlowPeriod,context.SignalPeriod)
 
+    warn "PAST: "+macd2.macd
+    warn "CURRENT: "+macd.macd
 
+    #warn functions.macd(instrument.close - 1, context.lag+1, context.FastPeriod,context.SlowPeriod,context.SignalPeriod)
+    #warn functions.macd(instrument.close - 1, context.lag+2, context.FastPeriod,context.SlowPeriod,context.SignalPeriod)
 ########################################
 ######    Store Past Signals ###########
 
 
     context.prevmacd.push(macd.macd)
     context.prevmacd.shift()
+#warn "Prev MACD: "+macd1.macd+" Curr MACD: "+macd.macd
 
-
-    warn "MACD4: "+context.prevmacd[0]+" MACD3: "+context.prevmacd[1]+" MACD2: "+context.prevmacd[2]+" MACD1: "+context.prevmacd[3]
+    #warn "MACD4: "+context.prevmacd[0]+" MACD3: "+context.prevmacd[1]+" MACD2: "+context.prevmacd[2]+" MACD1: "+context.prevmacd[3]
  
     
 
