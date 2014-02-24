@@ -1,6 +1,6 @@
 ###########################################################  
 #                                                         #
-# Sungkhum StochRSI/MACD/MFI Bot 1.1                      #
+# Sungkhum StochRSI/MACD/MFI Bot 1.2                      #
 # BTC: 1Pu3a4kNEPYiszh8xFv3x7JqWrpbDs28XK                 #
 #                                                         #
 # Using Thanasis full working framework and Emergency bot #
@@ -316,7 +316,7 @@ handle: (context, data)->
        context.KrsiZero = true
 
 ########################################
-######    Store Past signals ################
+######    Get Past data ################
 
     context.prevrsi_d.push(stochrsi.D)
     context.prevrsi_d.shift()
@@ -327,21 +327,25 @@ handle: (context, data)->
     context.prevmacd.push(macd.macd)
     context.prevmacd.shift()
 
+    macdprev1 = functions.macd(instrument.close, 2, context.FastPeriod,context.SlowPeriod,context.SignalPeriod)
+
+    stochrsiprev1 = functions.stochrsi(instrument.close,2,context.period,context.fastK_period,context.fastD_period,context.fastD_MAType) 
+   
 
     
 ########################################
 ######    buy or sell Strategy #########
 
 
-    if mfi > 70
+    if mfi > 80
         context.mfi_HIGH = true
         context.mfi_LOW = false
 
-    if mfi < 30
+    if mfi < 20
         context.mfi_LOW = true
         context.mfi_HIGH = false
 
-    if (context.prevrsi_d[2] < context.prevrsi_k[2] and stochrsi.D > stochrsi.K and context.mfi_HIGH)
+    if (stochrsiprev1.D < stochrsiprev1.K and stochrsi.D > stochrsi.K and context.mfi_HIGH)
         context.selltrue = true
         context.sellcount = (context.sellcount + 1)
         context.buytrue = false
@@ -350,7 +354,7 @@ handle: (context, data)->
         #warn "SELL is TRUE"
 
 
-    if context.KrsiZero and context.prevrsi_d[2] > context.prevrsi_k[2] and stochrsi.D < stochrsi.K and context.mfi_LOW
+    if context.KrsiZero and stochrsiprev1.D > stochrsiprev1.K and stochrsi.D < stochrsi.K and context.mfi_LOW
         context.buytrue = true
         context.selltrue = false
         context.mfi_LOW = false
@@ -361,7 +365,7 @@ handle: (context, data)->
 
  
 
-    if context.buytrue and (macd.macd - context.prevmacd[2]) > 1 and stochrsi.D > 50 and stochrsi.D < stochrsi.K      ## you must write here your own condition to buy
+    if context.buytrue and (macd.macd - macdprev1.macd) > 1 and stochrsi.D > 50 and stochrsi.D < stochrsi.K      ## you must write here your own condition to buy
  
         ######  don't touch bellow #####
         if context.have_fiat
@@ -382,7 +386,7 @@ handle: (context, data)->
 
     
     
-    if context.selltrue  and context.prevmacd[2] > macd.macd and context.sellcount < 6 and stochrsi.D > stochrsi.K     ##and (context.prevmacd[2] - macd.macd) > 0.4 you must write here your own condition to sell
+    if context.selltrue  and macdprev1.macd > macd.macd and context.sellcount < 6 and stochrsi.D > stochrsi.K     ##and (macdprev1.macd - macd.macd) > 0.4 you must write here your own condition to sell
         
         ######  don't touch bellow #####
         if context.have_coins 
@@ -428,27 +432,28 @@ handle: (context, data)->
 ######   debug  stats ######################    
 
   
-    #warn "###########################################################"
+    warn "###########################################################"
     #warn "price now:  #{price}"
-    debug "last action was '#{context.last_action_was}' at the price of:  #{context.price_of_last_order}"
+    warn "last action was '#{context.last_action_was}' at the price of:  #{context.price_of_last_order}"
     debug "smartness of the bot from the last trade:  #{efficiency_of_last_trade} %"
     debug "total number of buy/sell orders:  #{context.number_of_orders}"
     debug "total commisions paid by now:  #{context.commisions_paid}"
-    #warn "start capital:  #{context.first_capital}"
-    #warn "capital now:  #{capital}"
-    warn "total buy and hold efficiency:  #{percent_buy_and_hold} %"    
-    warn "total bot efficiency:  #{percent_bot} % "
-    #warn "MACD Didn't BUY >1: "+(macd.macd - context.prevmacd[2])
-    #warn "MACD Didn't SELL >0.5 "+(context.prevmacd[2] - macd.macd)
+    warn "start capital:  #{context.first_capital}"
+    warn "capital now:  #{capital}"
+    #warn "total buy and hold efficiency:  #{percent_buy_and_hold} %"    
+    #warn "total bot efficiency:  #{percent_bot} % "
+    #warn "MACD Didn't BUY >1: "+(macd.macd - macdprev1.macd)
+    #warn "MACD Didn't SELL >0.5 "+(macdprev1.macd - macd.macd)
     #warn "	MACD:	"+macd.macd+"	"
-    #warn "MACD Prev: "+context.prevmacd[2]
+    #warn "MACD Prev: "+macdprev1.macd
     #warn "StochK:		"+stochrsi.K+"	"
     #warn "		StochK Prev:"+context.prevrsi_k[2]
     #warn "			StochD:	"+stochrsi.D+"	"
     #warn "StochD Prev: "+context.prevrsi_d[2]
     #warn "MACD	"+macd.macd+"	StochK	"+stochrsi.K+"	StochD:	"+stochrsi.D+"	"+price
     #warn "MFI: "+mfi+" MFI HIGH="+context.mfi_HIGH+" MFI LOW="+context.mfi_LOW
-    #warn "###########################################################"
+    warn "###########################################################"
+    #warn "StochK Prev: "+stochrsiprev1.K
 
    
  
